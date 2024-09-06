@@ -123,9 +123,14 @@ pub trait Declarable {
             .await
             .map_err(MigrationError::Migrator)?;
 
-        TransactionWaiter::new(transaction_hash, account.provider())
+        let receipt = TransactionWaiter::new(transaction_hash, account.provider())
             .await
             .map_err(MigrationError::WaitingError)?;
+
+        println!(
+            "declare receipt:\n{}",
+            serde_json::to_string_pretty(&receipt).expect("bad declare receipt")
+        );
 
         return Ok(DeclareOutput { transaction_hash, class_hash });
     }

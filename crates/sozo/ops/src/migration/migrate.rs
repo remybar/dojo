@@ -559,9 +559,14 @@ where
             anyhow!("Failed to register models to World: {e}")
         })?;
 
-    TransactionWaiter::new(transaction_hash, migrator.provider()).await?;
+    let receipt = TransactionWaiter::new(transaction_hash, migrator.provider()).await?;
 
     ui.print(format!("All models are registered at: {transaction_hash:#x}\n"));
+
+    println!(
+        "register receipt:\n{}",
+        serde_json::to_string_pretty(&receipt).expect("bad register receipt")
+    );
 
     Ok(RegisterOutput { transaction_hash, declare_output, registered_models: models_to_register })
 }
