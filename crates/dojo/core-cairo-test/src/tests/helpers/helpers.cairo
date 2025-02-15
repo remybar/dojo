@@ -35,10 +35,11 @@ pub struct NotCopiable {
     pub b: ByteArray,
 }
 
-#[derive(Drop, Serde, Debug, PartialEq, Introspect)]
+#[derive(Drop, Serde, Debug, PartialEq, Introspect, Default)]
 pub enum EnumOne {
     One,
     Two: u32,
+    #[default]
     Three: (felt252, u32),
 }
 

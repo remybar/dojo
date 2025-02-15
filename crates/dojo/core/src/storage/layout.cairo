@@ -7,6 +7,9 @@ use super::packing;
 // the minimum internal size of an empty ByteArray
 const MIN_BYTE_ARRAY_SIZE: u32 = 3;
 
+// the maximum allowed value for a variant index.
+const MAX_VARIANT_VALUE: u256 = 256_u256;
+
 /// Write values to the world storage.
 ///
 /// # Arguments
@@ -170,12 +173,15 @@ pub fn write_enum_layout(
 ) {
     if let Option::Some(variant) = values.get(offset) {
         // TODO: when Cairo 2.8 support is added, unboxing should be implicit.
-        let variant: felt252 = *variant.unbox();
-        // first, get the variant value from `values`
-        assert(variant.into() < 256_u256, 'invalid variant value');
+        let variant = *variant.unbox();
 
-        // and write it
-        database::set(model, key, values, offset, [packing::PACKING_MAX_BITS].span());
+        // first, get the variant value from `values`
+        assert(variant.into() < MAX_VARIANT_VALUE, 'invalid variant value');
+
+        // As the `variant` value could be 0, and to be able to detect
+        // "not initialized" variant, we increment the variant value by one
+        // before writing it in the world storage.
+        database::set(model, key, [variant + 1].span(), offset, [packing::PACKING_MAX_BITS].span());
         offset += 1;
 
         // find the corresponding layout and then write the full variant
@@ -297,18 +303,27 @@ pub fn delete_enum_layout(model: felt252, key: felt252, variant_layouts: Span<Fi
     assert(res.len() == 1, 'internal database error');
 
     let variant = *res.at(0);
-    assert(variant.into() < 256_u256, 'invalid variant value');
 
-    // reset the variant value
-    database::delete(model, key, [packing::PACKING_MAX_BITS].span());
+    // // a valid variant must be greater than or equal to 1.
+    // 0 means "not initialized" so nothing to do here.
+    if variant.into() > 0_u256 {
+        // as the variant value is incremented by one when being written in the
+        // world storage, we need to decremented it.
+        let variant = variant - 1;
+   
+        assert(variant.into() < 256_u256, 'invalid variant value');
 
-    // find the corresponding layout and the delete the full variant
-    let variant_data_key = combine_key(key, variant);
+        // reset the variant value
+        database::delete(model, key, [packing::PACKING_MAX_BITS].span());
 
-    match find_field_layout(variant, variant_layouts) {
-        Option::Some(layout) => delete_layout(model, variant_data_key, layout),
-        Option::None => panic!("Unable to find the variant layout"),
-    };
+        // find the corresponding layout and the delete the full variant
+        let variant_data_key = combine_key(key, variant);
+
+        match find_field_layout(variant, variant_layouts) {
+            Option::Some(layout) => delete_layout(model, variant_data_key, layout),
+            Option::None => panic!("Unable to find the variant layout"),
+        };
+    }
 }
 
 /// Read a model record.
@@ -461,15 +476,24 @@ pub fn read_enum_layout(
     assert(res.len() == 1, 'internal database error');
 
     let variant = *res.at(0);
-    assert(variant.into() < 256_u256, 'invalid variant value');
 
-    read_data.append(variant);
+    // a valid variant must be greater than or equal to 1.
+    // 0 means "not initialized" so we return an empty span.
+    if variant.into() > 0_u256 {
+        // as the variant value is incremented by one when being written in the
+        // world storage, we need to decremented it.
+        let variant = variant - 1;
 
-    // find the corresponding layout and the read the variant data
-    let variant_data_key = combine_key(key, variant);
+        assert(variant.into() < MAX_VARIANT_VALUE, 'invalid variant value');
 
-    match find_field_layout(variant, variant_layouts) {
-        Option::Some(layout) => read_layout(model, variant_data_key, ref read_data, layout),
-        Option::None => panic!("Unable to find the variant layout"),
-    };
+        read_data.append(variant);
+
+        // find the corresponding layout and the read the variant data
+        let variant_data_key = combine_key(key, variant);
+
+        match find_field_layout(variant, variant_layouts) {
+            Option::Some(layout) => read_layout(model, variant_data_key, ref read_data, layout),
+            Option::None => panic!("Unable to find the variant layout"),
+        };
+    }
 }
