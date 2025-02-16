@@ -133,5 +133,5 @@ fn write_read_option_enums() {
     assert_eq!(wo.a, EnumOne::One);
     // Should have been `Option::None`. Need to find a way to mitigate this issue
     // using a `DojoOption` converter or customizing the serialization.
-    assert_eq!(wo.b, Option::Some(0));
+    assert_eq!(wo.b, Option::None);
 }

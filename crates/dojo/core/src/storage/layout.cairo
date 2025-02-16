@@ -25,6 +25,7 @@ pub fn write_layout(
         Layout::Tuple(layout) => { write_tuple_layout(model, key, values, ref offset, layout); },
         Layout::ByteArray => { write_byte_array_layout(model, key, values, ref offset); },
         Layout::Enum(layout) => { write_enum_layout(model, key, values, ref offset, layout); },
+        Layout::Option(layout) => { write_option_layout(model, key, values, ref offset, layout); },
     }
 }
 
@@ -192,6 +193,39 @@ pub fn write_enum_layout(
     }
 }
 
+
+pub fn write_option_layout(
+    model: felt252,
+    key: felt252,
+    values: Span<felt252>,
+    ref offset: u32,
+    layout: Span<Layout>,
+) {
+    if let Option::Some(variant) = values.get(offset) {
+        // TODO: when Cairo 2.8 support is added, unboxing should be implicit.
+        let variant: felt252 = *variant.unbox();
+        let variant_u256: u256 = variant.into();
+
+        assert(variant_u256 == 0 || variant_u256 == 1, 'invalid variant value');
+
+        // to be able to detect not initialised option,
+        // we increment the variant value by one.
+        database::set(model, key, [variant + 1].span(), offset, [packing::PACKING_MAX_BITS].span());
+        offset += 1;
+
+        // here, variant = 0 means Some (with some additional data to store),
+        // and variant = 1 means None.
+        if variant == 0 {
+            let variant_data_key = combine_key(key, variant);
+            write_layout(
+                model, variant_data_key, values, ref offset, *layout.at(0),
+            );
+        }
+    } else {
+        panic!("offset is out of bounds for enum layout variant");
+    }
+}
+
 /// Delete a fixed layout model record from the world storage.
 ///
 /// # Arguments
@@ -244,6 +278,7 @@ pub fn delete_layout(model: felt252, key: felt252, layout: Layout) {
         Layout::Tuple(layout) => { delete_tuple_layout(model, key, layout); },
         Layout::ByteArray => { delete_byte_array_layout(model, key); },
         Layout::Enum(layout) => { delete_enum_layout(model, key, layout); },
+        Layout::Option(layout) => { delete_option_layout(model, key, layout); }
     }
 }
 
@@ -311,6 +346,23 @@ pub fn delete_enum_layout(model: felt252, key: felt252, variant_layouts: Span<Fi
     };
 }
 
+pub fn delete_option_layout(model: felt252, key: felt252, layout: Span<Layout>) {
+    // read the variant value
+    let res = database::get(model, key, [packing::PACKING_MAX_BITS].span());
+    assert(res.len() == 1, 'internal database error');
+
+    let variant = *res.at(0);
+
+    // variant = 2 means Some so additional data have to be deleted
+    if variant == 2 {
+        let variant_data_key = combine_key(key, variant);
+        delete_layout(model, variant_data_key, *layout.at(0));
+    } 
+
+    // reset the variant value
+    database::delete(model, key, [packing::PACKING_MAX_BITS].span());
+} 
+
 /// Read a model record.
 ///
 /// # Arguments
@@ -326,6 +378,7 @@ pub fn read_layout(model: felt252, key: felt252, ref read_data: Array<felt252>, 
         Layout::Tuple(layout) => read_tuple_layout(model, key, ref read_data, layout),
         Layout::ByteArray => read_byte_array_layout(model, key, ref read_data),
         Layout::Enum(layout) => read_enum_layout(model, key, ref read_data, layout),
+        Layout::Option(layout) => read_option_layout(model, key, ref read_data, layout),
     };
 }
 
@@ -473,3 +526,33 @@ pub fn read_enum_layout(
         Option::None => panic!("Unable to find the variant layout"),
     };
 }
+
+pub fn read_option_layout(
+    model: felt252, key: felt252, ref read_data: Array<felt252>, layout: Span<Layout>,
+) {
+    // read the variant value first
+    let res = database::get(model, key, [8].span());
+    assert(res.len() == 1, 'internal database error');
+
+    let variant = *res.at(0);
+
+    if variant == 1 || variant == 2 {
+
+        // decrement by one the read variant as it has been incremented by one
+        // during writing.
+        let variant = variant - 1;
+        read_data.append(variant);
+
+        // variant = 0 means Some (so additional data to read)
+        if variant == 0 {
+            let variant_data_key = combine_key(key, variant);
+            read_layout(model, variant_data_key, ref read_data, *layout.at(0));
+        }
+    }
+    else {
+        // this model record is not initialised, so we return the variant
+        // value 1 which means 'None'
+        read_data.append(1);
+    }
+}
+

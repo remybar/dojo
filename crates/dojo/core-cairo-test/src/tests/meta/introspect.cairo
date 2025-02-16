@@ -258,7 +258,11 @@ fn test_layout_of_enum_with_variant_data() {
 fn test_layout_of_struct_with_option() {
     let layout = Introspect::<StructWithOption>::layout();
     let expected = Layout::Struct(
-        array![field(selector!("x"), _enum(array![Option::Some(fixed(array![16])), Option::None]))]
+        array![
+            field(
+                selector!("x"),
+                Layout::Option([fixed(array![16])].span())
+            )]
             .span(),
     );
 
