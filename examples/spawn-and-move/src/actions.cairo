@@ -1,7 +1,9 @@
-use dojo_examples::models::{Direction, Position};
+use dojo_examples::models::{Direction, Position, WithEnumAndOption};
 
 #[starknet::interface]
 pub trait IActions<T> {
+    fn get_player_enum_and_option(self: @T) -> WithEnumAndOption;
+
     fn spawn(ref self: T);
     fn move(ref self: T, direction: Direction);
     fn set_player_config(ref self: T, name: ByteArray);
@@ -20,7 +22,7 @@ pub mod actions {
 
     use starknet::{ContractAddress, get_caller_address};
     use dojo_examples::models::{
-        Position, Moves, MovesValue, Direction, Vec2, PlayerConfig, PlayerItem, ServerProfile,
+        WithEnumAndOption, Position, Moves, MovesValue, Direction, Vec2, PlayerConfig, PlayerItem, ServerProfile,
     };
     use dojo_examples::utils::next_position;
     use dojo_examples::lib_math::{SimpleMathLibraryDispatcher, SimpleMathDispatcherTrait};
@@ -185,6 +187,12 @@ pub mod actions {
         }
 
         fn get_player_position(self: @ContractState) -> Position {
+            let player = get_caller_address();
+            let mut world = self.world_default();
+            world.read_model(player)
+        }
+
+        fn get_player_enum_and_option(self: @ContractState) -> WithEnumAndOption {
             let player = get_caller_address();
             let mut world = self.world_default();
             world.read_model(player)

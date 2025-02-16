@@ -1,7 +1,7 @@
 {
   "world": {
-    "class_hash": "0x7c9469d45a9cdbab775035afb48e1fa73fb35ab059fcb9dfb0a301aa973e783",
-    "address": "0x24334e79a3c56e5374c5bdd148c22ff2f0de3b4dc6e734e22ea49795f367221",
+    "class_hash": "0x35c462fa97aeb24987cc8b5cc94b4756019d9047f5542f455751eb779c11189",
+    "address": "0x2d502d8f70346613939630181e0cf3e4ac8875751e4118eb901d18c3b79f5e4",
     "seed": "dojo_examples",
     "name": "example",
     "entrypoints": [
@@ -1312,8 +1312,8 @@
   },
   "contracts": [
     {
-      "address": "0x73011d08f54413ec16fd768a0dcf1e61a6218e196b01b6ddfad09502f47e71d",
-      "class_hash": "0x747821121b203c09f02f2568e69fa3e4f50840ec33d38546143cffe6114afce",
+      "address": "0x1eff1022937673dc234e8d2117d9a2b66500fe89685fa816fb452d5fc1ddf8a",
+      "class_hash": "0x76cb6ac32569b9ffe54e745a7defefab1923667acbf4fdebbedf729cf02f67",
       "abi": [
         {
           "type": "impl",
@@ -1369,6 +1369,56 @@
           "type": "impl",
           "name": "ActionsImpl",
           "interface_name": "dojo_examples::actions::IActions"
+        },
+        {
+          "type": "enum",
+          "name": "core::option::Option::<core::integer::u8>",
+          "variants": [
+            {
+              "name": "Some",
+              "type": "core::integer::u8"
+            },
+            {
+              "name": "None",
+              "type": "()"
+            }
+          ]
+        },
+        {
+          "type": "enum",
+          "name": "dojo_examples::models::MyEnum",
+          "variants": [
+            {
+              "name": "One",
+              "type": "()"
+            },
+            {
+              "name": "Two",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "Three",
+              "type": "(core::integer::u16, core::integer::u64)"
+            }
+          ]
+        },
+        {
+          "type": "struct",
+          "name": "dojo_examples::models::WithEnumAndOption",
+          "members": [
+            {
+              "name": "player",
+              "type": "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              "name": "x",
+              "type": "core::option::Option::<core::integer::u8>"
+            },
+            {
+              "name": "y",
+              "type": "dojo_examples::models::MyEnum"
+            }
+          ]
         },
         {
           "type": "enum",
@@ -1428,6 +1478,17 @@
           "type": "interface",
           "name": "dojo_examples::actions::IActions",
           "items": [
+            {
+              "type": "function",
+              "name": "get_player_enum_and_option",
+              "inputs": [],
+              "outputs": [
+                {
+                  "type": "dojo_examples::models::WithEnumAndOption"
+                }
+              ],
+              "state_mutability": "view"
+            },
             {
               "type": "function",
               "name": "spawn",
@@ -1666,7 +1727,7 @@
       ]
     },
     {
-      "address": "0x2fbd487dc4ccae7a01c767addb192df5c285fe07fe06756b463d7b5f3b43044",
+      "address": "0x27441094042d345e709b07aad6061e1fa262801c5330a6000203c979959c386",
       "class_hash": "0x7b31bb137c041fbe8247724a888bb108aaf2ff6b2bb7be5ecf5c954471e30c3",
       "abi": [
         {
@@ -1860,7 +1921,7 @@
       ]
     },
     {
-      "address": "0x64b964be7fb8d9d9161a34b39cb2709b7a36b46063e0180c93a62aabc899b52",
+      "address": "0x28b6f60b30a3212a43d9c3caafb5f7c047a0d390417beca967d70f6d65fdd75",
       "class_hash": "0x38c4b1f36acecf15ea27430f34956bdfed933271ef23bcb9444db15dce66c6b",
       "abi": [
         {
@@ -2036,7 +2097,7 @@
       ]
     },
     {
-      "address": "0x6460654b134506a238bf79b73d2be078f587718521048c80b78514fe90b6336",
+      "address": "0xe3f5616d3aebf1d8c07b6c51fb4894d3634d4faefb4e6c62756c2d15776bd",
       "class_hash": "0x5dd5b200655bdc68fba0ec23b25a9fb2d8ea2da118d60789c2d1d6adac3afae",
       "abi": [
         {
@@ -2405,6 +2466,12 @@
       "class_hash": "0xbdb10fde8e9d7ccd8c07a04a1c25cc226159f68695e0a8a1c2ffe7b8fc5a6d",
       "tag": "ns-ServerProfile",
       "selector": "0x641dc5f178aff0c7935a8f1ae30c6038a3d3512ea164d486f98bc37b6beabf"
+    },
+    {
+      "members": [],
+      "class_hash": "0x969867724964f70235ac808b70c7b889efba70ec1a660a570a5525e5ea5798",
+      "tag": "ns-WithEnumAndOption",
+      "selector": "0x57b74b462a0664fc8c5a1335439fb54214fd3dc9c76eeb9dd152ad8246edaf3"
     }
   ],
   "events": [

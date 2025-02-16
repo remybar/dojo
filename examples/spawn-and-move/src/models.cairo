@@ -44,6 +44,28 @@ pub struct Moves {
     pub last_direction: Direction,
 }
 
+#[derive(Serde, Copy, Drop, Introspect, PartialEq, Debug)]
+pub enum MyEnum {
+    One,
+    Two: u32,
+    Three: (u16, u64),
+}
+
+impl MyEnumDefault of Default<MyEnum> {
+    fn default() -> MyEnum {
+        MyEnum::Three((42, 6886))
+    }
+}
+
+#[derive(Copy, Drop, Serde, Debug, Default)]
+#[dojo::model]
+pub struct WithEnumAndOption {
+    #[key]
+    pub player: ContractAddress,
+    pub x: Option<u8>,
+    pub y: MyEnum,
+}
+
 #[derive(Copy, Drop, Serde, Debug, Default)]
 #[dojo::model]
 pub struct MockToken {
