@@ -4,7 +4,7 @@ pub mod sn_c1 {
     struct Storage {}
 }
 
-#[derive(Drop, Serde)]
+#[derive(Drop, Serde, Default)]
 #[dojo::model]
 pub struct M {
     #[key]

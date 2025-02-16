@@ -27,6 +27,7 @@ pub mod actions {
     use dojo::model::{ModelStorage, ModelValueStorage, Model};
     use dojo::event::EventStorage;
     use dojo::world::{WorldStorage, WorldStorageTrait};
+    use dojo::meta::ContractAddressDefault;
 
     // Features can be used on modules, structs, trait and `use`. Not inside
     // a function.

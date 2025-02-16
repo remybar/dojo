@@ -1,4 +1,4 @@
-#[derive(Drop, Serde)]
+#[derive(Drop, Serde, Default)]
 #[dojo::model]
 pub struct RiverSkale {
     #[key]

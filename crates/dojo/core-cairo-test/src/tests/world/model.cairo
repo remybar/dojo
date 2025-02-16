@@ -1,4 +1,5 @@
 use dojo::model::ModelStorage;
+use dojo::meta::ContractAddressDefault;
 use core::starknet::ContractAddress;
 
 use crate::tests::helpers::{
@@ -9,7 +10,7 @@ use dojo::world::{world, IWorldDispatcherTrait};
 use dojo::model::Model;
 
 
-#[derive(Introspect, Copy, Drop, Serde)]
+#[derive(Introspect, Copy, Drop, Serde, Default)]
 #[dojo::model]
 pub struct FooModelBadLayoutType {
     #[key]
@@ -18,7 +19,7 @@ pub struct FooModelBadLayoutType {
     pub b: u128,
 }
 
-#[derive(Introspect, Copy, Drop, Serde)]
+#[derive(Introspect, Copy, Drop, Serde, Default)]
 #[dojo::model]
 pub struct FooModelMemberRemoved {
     #[key]
@@ -26,7 +27,7 @@ pub struct FooModelMemberRemoved {
     pub b: u128,
 }
 
-#[derive(Introspect, Copy, Drop, Serde)]
+#[derive(Introspect, Copy, Drop, Serde, Default)]
 #[dojo::model]
 pub struct FooModelMemberAddedButRemoved {
     #[key]
@@ -36,7 +37,7 @@ pub struct FooModelMemberAddedButRemoved {
     pub d: u256,
 }
 
-#[derive(Introspect, Copy, Drop, Serde)]
+#[derive(Introspect, Copy, Drop, Serde, Default)]
 #[dojo::model]
 pub struct FooModelMemberAddedButMoved {
     #[key]
@@ -46,7 +47,7 @@ pub struct FooModelMemberAddedButMoved {
     pub c: u256,
 }
 
-#[derive(Introspect, Copy, Drop, Serde)]
+#[derive(Introspect, Copy, Drop, Serde, Default)]
 #[dojo::model]
 pub struct FooModelMemberAdded {
     #[key]
@@ -56,13 +57,14 @@ pub struct FooModelMemberAdded {
     pub c: u256,
 }
 
-#[derive(Introspect, Copy, Drop, Serde, PartialEq)]
+#[derive(Introspect, Copy, Drop, Serde, Default)]
 enum MyEnum {
+    #[default]
     X: u8,
     Y: u16,
 }
 
-#[derive(Introspect, Copy, Drop, Serde)]
+#[derive(Introspect, Copy, Drop, Serde, Default)]
 #[dojo::model]
 struct FooModelMemberChanged {
     #[key]
@@ -71,12 +73,13 @@ struct FooModelMemberChanged {
     pub b: u128,
 }
 
-#[derive(Introspect, Copy, Drop, Serde)]
+#[derive(Introspect, Copy, Drop, Serde, Default)]
 enum AnotherEnum {
+    #[default]
     X: bool,
 }
 
-#[derive(Introspect, Copy, Drop, Serde)]
+#[derive(Introspect, Copy, Drop, Serde, Default)]
 #[dojo::model]
 struct FooModelMemberIllegalChange {
     #[key]

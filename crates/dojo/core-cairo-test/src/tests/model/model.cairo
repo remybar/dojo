@@ -2,7 +2,7 @@ use dojo::model::{Model, ModelValue, ModelStorage, ModelValueStorage, ModelPtr};
 use dojo::world::WorldStorage;
 use dojo_cairo_test::{spawn_test_world, NamespaceDef, TestResource};
 
-#[derive(Copy, Drop, Serde, Debug, PartialEq)]
+#[derive(Copy, Drop, Serde, Debug, PartialEq, Default)]
 #[dojo::model]
 struct Foo {
     #[key]
@@ -14,7 +14,7 @@ struct Foo {
 }
 
 
-#[derive(Copy, Drop, Serde, Debug)]
+#[derive(Copy, Drop, Serde, Debug, Default)]
 #[dojo::model]
 struct Foo2 {
     #[key]
@@ -25,7 +25,7 @@ struct Foo2 {
     v2: u32,
 }
 
-#[derive(Copy, Drop, Serde, Debug)]
+#[derive(Copy, Drop, Serde, Debug, Default)]
 #[dojo::model]
 struct Foo3 {
     #[key]
@@ -36,7 +36,7 @@ struct Foo3 {
     v2: u32,
 }
 
-#[derive(Copy, Drop, Serde, Debug, Introspect)]
+#[derive(Copy, Drop, Serde, Debug, Introspect, Default)]
 struct AStruct {
     a: u8,
     b: u8,
@@ -45,7 +45,7 @@ struct AStruct {
 }
 
 #[dojo::model]
-#[derive(Copy, Drop, Serde, Debug)]
+#[derive(Copy, Drop, Serde, Debug, Default)]
 struct Foo4 {
     #[key]
     id: felt252,
@@ -55,7 +55,7 @@ struct Foo4 {
     v3: AStruct,
 }
 
-#[derive(Copy, Drop, Serde, Debug, Introspect)]
+#[derive(Copy, Drop, Serde, Debug, Introspect, Default)]
 struct FooSchema {
     v0: u256,
     v3: AStruct,

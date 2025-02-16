@@ -2,6 +2,7 @@ use starknet::{ContractAddress};
 
 use dojo::world::{IWorldDispatcher, WorldStorage, WorldStorageTrait};
 use dojo::model::Model;
+use dojo::meta::default::ContractAddressDefault;
 
 use crate::world::{
     spawn_test_world, NamespaceDef, TestResource, ContractDefTrait, WorldStorageTestTrait,
@@ -17,7 +18,7 @@ pub struct SimpleEvent {
     pub data: (felt252, felt252),
 }
 
-#[derive(Copy, Drop, Serde, Debug)]
+#[derive(Copy, Drop, Serde, Debug, Default)]
 #[dojo::model]
 pub struct Foo {
     #[key]
@@ -26,7 +27,7 @@ pub struct Foo {
     pub b: u128,
 }
 
-#[derive(Drop, Serde, Debug)]
+#[derive(Drop, Serde, Debug, Default)]
 #[dojo::model]
 pub struct NotCopiable {
     #[key]
@@ -43,7 +44,7 @@ pub enum EnumOne {
     Three: (felt252, u32),
 }
 
-#[derive(Drop, Serde, Debug)]
+#[derive(Drop, Serde, Debug, Default)]
 #[dojo::model]
 pub struct WithOptionAndEnums {
     #[key]
@@ -128,13 +129,13 @@ pub mod test_contract_with_dojo_init_args {
     }
 }
 
-#[derive(IntrospectPacked, Copy, Drop, Serde)]
+#[derive(IntrospectPacked, Copy, Drop, Serde, Default)]
 pub struct Sword {
     pub swordsmith: ContractAddress,
     pub damage: u32,
 }
 
-#[derive(IntrospectPacked, Copy, Drop, Serde)]
+#[derive(IntrospectPacked, Copy, Drop, Serde, Default)]
 #[dojo::model]
 pub struct Case {
     #[key]
@@ -143,7 +144,7 @@ pub struct Case {
     pub material: felt252,
 }
 
-#[derive(IntrospectPacked, Copy, Drop, Serde)]
+#[derive(IntrospectPacked, Copy, Drop, Serde, Default)]
 #[dojo::model]
 pub struct Character {
     #[key]
@@ -155,7 +156,7 @@ pub struct Character {
     pub gold: u32,
 }
 
-#[derive(IntrospectPacked, Copy, Drop, Serde)]
+#[derive(IntrospectPacked, Copy, Drop, Serde, Default)]
 pub struct Abilities {
     pub strength: u8,
     pub dexterity: u8,
@@ -165,7 +166,7 @@ pub struct Abilities {
     pub charisma: u8,
 }
 
-#[derive(IntrospectPacked, Copy, Drop, Serde)]
+#[derive(IntrospectPacked, Copy, Drop, Serde, Default)]
 pub struct Stats {
     pub kills: u128,
     pub deaths: u16,
@@ -178,9 +179,10 @@ pub struct Stats {
     pub romances: u16,
 }
 
-#[derive(IntrospectPacked, Copy, Drop, Serde)]
+#[derive(IntrospectPacked, Copy, Drop, Serde, Default)]
 pub enum Weapon {
     DualWield: (Sword, Sword),
+    #[default]
     Fists: (Sword, Sword),
 }
 

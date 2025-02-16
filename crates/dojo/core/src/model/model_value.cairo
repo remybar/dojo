@@ -26,13 +26,20 @@ pub trait ModelValue<V> {
     fn selector(namespace_hash: felt252) -> felt252;
 }
 
-pub impl ModelValueImpl<V, +Serde<V>, +ModelDefinition<V>, +ModelValueParser<V>> of ModelValue<V> {
+pub impl ModelValueImpl<V, +Serde<V>, +Drop<V>, +Default<V>, +ModelDefinition<V>, +ModelValueParser<V>> of ModelValue<V> {
     fn serialized_values(self: @V) -> Span<felt252> {
         ModelValueParser::<V>::serialize_values(self)
     }
 
     fn from_serialized(mut values: Span<felt252>) -> Option<V> {
-        Serde::<V>::deserialize(ref values)
+        let res = Serde::<V>::deserialize(ref values);
+        
+        if res.is_some() {
+            res
+        }
+        else {
+            Option::Some(Default::<V>::default())
+        }
     }
 
     fn name() -> ByteArray {

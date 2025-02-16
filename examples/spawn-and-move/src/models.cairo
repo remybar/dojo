@@ -1,7 +1,9 @@
 use starknet::ContractAddress;
+use dojo::meta::ContractAddressDefault;
 
-#[derive(Serde, Copy, Drop, Introspect, PartialEq, Debug)]
+#[derive(Serde, Copy, Drop, Introspect, PartialEq, Debug, Default)]
 pub enum Direction {
+    #[default]
     None,
     Left,
     Right,
@@ -21,7 +23,7 @@ impl DirectionIntoFelt252 of Into<Direction, felt252> {
     }
 }
 
-#[derive(Drop, Serde)]
+#[derive(Drop, Serde, Default)]
 #[dojo::model]
 pub struct Message {
     #[key]
@@ -33,7 +35,7 @@ pub struct Message {
     pub message: ByteArray,
 }
 
-#[derive(Copy, Drop, Serde, Debug)]
+#[derive(Copy, Drop, Serde, Debug, Default)]
 #[dojo::model]
 pub struct Moves {
     #[key]
@@ -42,7 +44,7 @@ pub struct Moves {
     pub last_direction: Direction,
 }
 
-#[derive(Copy, Drop, Serde, Debug)]
+#[derive(Copy, Drop, Serde, Debug, Default)]
 #[dojo::model]
 pub struct MockToken {
     #[key]
@@ -50,7 +52,7 @@ pub struct MockToken {
     pub amount: u128,
 }
 
-#[derive(Copy, Drop, Serde, IntrospectPacked, Debug)]
+#[derive(Copy, Drop, Serde, IntrospectPacked, Debug, Default)]
 pub struct Vec2 {
     pub x: u32,
     pub y: u32,
@@ -60,7 +62,7 @@ pub struct Vec2 {
 // and a runtime error would be thrown.
 // Any field that is a custom type into a `IntrospectPacked` type
 // must be packed.
-#[derive(Copy, Drop, Serde, IntrospectPacked, Debug)]
+#[derive(Copy, Drop, Serde, IntrospectPacked, Debug, Default)]
 #[dojo::model]
 pub struct Position {
     #[key]
@@ -70,14 +72,14 @@ pub struct Position {
 
 // Every field inside a model must derive `Introspect` or `IntrospectPacked`.
 // `IntrospectPacked` can also be used into models that are only using `Introspect`.
-#[derive(Copy, Drop, Serde, Introspect, PartialEq)]
+#[derive(Copy, Drop, Serde, Introspect, PartialEq, Default)]
 pub struct PlayerItem {
     pub item_id: u32,
     pub quantity: u32,
     pub score: i32,
 }
 
-#[derive(Drop, Serde)]
+#[derive(Drop, Serde, Default)]
 #[dojo::model]
 pub struct PlayerConfig {
     #[key]
@@ -87,7 +89,7 @@ pub struct PlayerConfig {
     pub favorite_item: Option<u32>,
 }
 
-#[derive(Drop, Serde)]
+#[derive(Drop, Serde, Default)]
 #[dojo::model]
 pub struct ServerProfile {
     #[key]

@@ -2,6 +2,7 @@ use dojo::model::ModelStorage;
 use core::starknet::ContractAddress;
 
 use dojo::world::IWorldDispatcher;
+use dojo::meta::ContractAddressDefault;
 
 use crate::world::{spawn_test_world, NamespaceDef, TestResource};
 
@@ -10,7 +11,7 @@ use crate::world::{spawn_test_world, NamespaceDef, TestResource};
 /// as the test runner does not differenciate them.
 /// These model contracts are used to test model upgrades in tests/model.cairo.
 
-#[derive(IntrospectPacked, Copy, Drop, Serde)]
+#[derive(IntrospectPacked, Copy, Drop, Serde, Default)]
 #[dojo::model]
 struct FooModelBadLayoutType {
     #[key]
@@ -19,7 +20,7 @@ struct FooModelBadLayoutType {
     pub b: u128,
 }
 
-#[derive(Introspect, Copy, Drop, Serde)]
+#[derive(Introspect, Copy, Drop, Serde, Default)]
 #[dojo::model]
 struct FooModelMemberRemoved {
     #[key]
@@ -28,7 +29,7 @@ struct FooModelMemberRemoved {
     pub b: u128,
 }
 
-#[derive(Introspect, Copy, Drop, Serde)]
+#[derive(Introspect, Copy, Drop, Serde, Default)]
 #[dojo::model]
 struct FooModelMemberAddedButRemoved {
     #[key]
@@ -37,7 +38,7 @@ struct FooModelMemberAddedButRemoved {
     pub b: u128,
 }
 
-#[derive(Introspect, Copy, Drop, Serde)]
+#[derive(Introspect, Copy, Drop, Serde, Default)]
 #[dojo::model]
 struct FooModelMemberAddedButMoved {
     #[key]
@@ -46,7 +47,7 @@ struct FooModelMemberAddedButMoved {
     pub b: u128,
 }
 
-#[derive(Introspect, Copy, Drop, Serde)]
+#[derive(Introspect, Copy, Drop, Serde, Default)]
 #[dojo::model]
 struct FooModelMemberAdded {
     #[key]
@@ -55,12 +56,13 @@ struct FooModelMemberAdded {
     pub b: u128,
 }
 
-#[derive(Introspect, Copy, Drop, Serde)]
+#[derive(Introspect, Copy, Drop, Serde, Default)]
 enum MyEnum {
+    #[default]
     X: u8,
 }
 
-#[derive(Introspect, Copy, Drop, Serde)]
+#[derive(Introspect, Copy, Drop, Serde, Default)]
 #[dojo::model]
 struct FooModelMemberChanged {
     #[key]
@@ -69,12 +71,13 @@ struct FooModelMemberChanged {
     pub b: u128,
 }
 
-#[derive(Introspect, Copy, Drop, Serde)]
+#[derive(Introspect, Copy, Drop, Serde, Default)]
 enum AnotherEnum {
+    #[default]
     X: u8,
 }
 
-#[derive(Introspect, Copy, Drop, Serde)]
+#[derive(Introspect, Copy, Drop, Serde, Default)]
 #[dojo::model]
 struct FooModelMemberIllegalChange {
     #[key]

@@ -105,7 +105,7 @@ pub trait Model<M> {
     fn ptr(self: @M) -> ModelPtr<M>;
 }
 
-pub impl ModelImpl<M, +ModelParser<M>, +ModelDefinition<M>, +Serde<M>, +Drop<M>> of Model<M> {
+pub impl ModelImpl<M, +ModelParser<M>, +ModelDefinition<M>, +Serde<M>, +Drop<M>, +Default<M>> of Model<M> {
     fn keys<K, +KeyParser<M, K>>(self: @M) -> K {
         KeyParser::<M, K>::parse_key(self)
     }
@@ -127,7 +127,14 @@ pub impl ModelImpl<M, +ModelParser<M>, +ModelDefinition<M>, +Serde<M>, +Drop<M>>
         serialized.append_span(values);
         let mut span = serialized.span();
 
-        Serde::<M>::deserialize(ref span)
+        let res = Serde::<M>::deserialize(ref span);
+        
+        if res.is_some() {
+            res
+        }
+        else {
+            Option::Some(Default::<M>::default())
+        }
     }
 
     fn name() -> ByteArray {

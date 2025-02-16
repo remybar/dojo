@@ -25,6 +25,9 @@ pub mod event {
 }
 
 pub mod meta {
+    pub mod default;
+    pub use default::*;
+
     pub mod interface;
     pub use interface::{
         IDeployedResource, IDeployedResourceDispatcher, IDeployedResourceDispatcherTrait,

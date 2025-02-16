@@ -3,7 +3,7 @@
 use dojo::model::model::Model;
 use dojo::utils;
 
-#[derive(Introspect, Drop, Serde, PartialEq, Clone, Debug)]
+#[derive(Introspect, Drop, Serde, PartialEq, Clone, Debug, Default)]
 #[dojo::model]
 pub struct ResourceMetadata {
     #[key]
